@@ -53,4 +53,50 @@ export default class Contract {
                 callback(error, payload);
             });
     }
+
+    insuranceData(flightName, departure, callback){
+        let self = this;
+        let payload = {
+            airline: self.airlines[0],
+            flightName: flightName,
+            departure: departure
+        };
+        console.log('getInsurance:', self.airlines[0], self.passengers[0], flightName, departure);
+
+        self.flightSuretyApp.methods.insuranceData(self.passengers[0], self.airlines[0], flightName, departure)
+        .call({
+            from: self.passengers[0],
+        }, (err, res) => {
+            console.log('res:', res); 
+            console.log('err:', err); 
+            callback(err, res);
+        });
+    }
+        
+
+    buy(flightName, departure, callback){
+        let self = this;
+        let payload = {
+            airline: self.airlines[0],
+            flightName: flightName,
+            departure: departure
+        };
+        console.log('purchase:', self.airlines[0], self.passengers[0], flightName, departure);
+
+        self.flightSuretyApp.methods.buy(
+            self.airlines[0],
+            flightName,
+            departure
+            )
+            .send(
+                {
+                from: self.passengers[0],
+                value: self.web3.utils.toWei("25", "ether"),
+                gas: 9500000,
+                },
+                (err, res) => {
+                    callback(err, res);
+                });
+        
+    }
 }

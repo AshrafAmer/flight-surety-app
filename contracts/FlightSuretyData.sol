@@ -271,6 +271,13 @@ contract FlightSuretyData {
     }
 
 
+    function insuranceData(address buyer, address airlineAddress, string memory flightName, uint256 departure)
+    public view returns (uint value, InsuranceState state){
+        bytes32 flightKey = getFlightKey(airlineAddress, flightName, departure);
+        FlightInsurance storage flightInsurance = flightInsurances[flightKey];
+        Insurance storage insurance = flightInsurance.insurances[buyer];
+        return (insurance.value, insurance.state);
+    }
    /**
     * @dev Buy insurance for a flight
     *

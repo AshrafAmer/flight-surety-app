@@ -24,7 +24,27 @@ import './flightsurety.css';
             contract.fetchFlightStatus(flight, (error, result) => {
                 display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp} ]);
             });
-        })
+        });
+
+        DOM.elid('submit-ticket').addEventListener('click', () => {
+            let flight = DOM.elid('flight-name').value;
+            let departure = DOM.elid('departure').value;
+            let address = DOM.elid('flight-address').value;
+            // Write transaction
+            contract.buy(address, flight, departure,(error, result) => {
+                display('Flight', [ { label: 'Buy Ticket', error: error, value: result + ' ' + result.timestamp} ]);
+            });
+        });
+
+
+        DOM.elid('get-flight-data').addEventListener('click', () => {
+            let _flight = DOM.elid('get-flight-name').value;
+            let _departure = DOM.elid('get-departure').value;
+            // Write transaction
+            contract.insuranceData(_flight, _departure,(error, result) => {
+                display('Flight', [ { label: 'Flight Data', error: error, value: result + ' ' + result.timestamp} ]);
+            });
+        });
     
     });
     

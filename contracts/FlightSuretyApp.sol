@@ -158,6 +158,25 @@ contract FlightSuretyApp {
     }
 
 
+    // return Insurance Data
+    function insuranceData(address buyer, address airlineAddress, string memory flightName, uint256 departure)
+    public view returns ( uint value, FlightSuretyData.InsuranceState state){
+        return contractData.insuranceData(
+            buyer,
+            airlineAddress,
+            flightName,
+            departure
+        );
+    }
+
+
+    // Buy new Ticket
+    function buy(address airlineAddress, string memory flightName, uint256 departure)
+    public payable requireIsOperational{
+        contractData.buy.value(msg.value)(msg.sender, airlineAddress, flightName, departure);
+    }
+
+
     // Generate a request for oracles to fetch flight information
     function fetchFlightStatus(address airline, string memory flight, uint256 timestamp) public{
         uint8 index = getRandomIndex(msg.sender);
