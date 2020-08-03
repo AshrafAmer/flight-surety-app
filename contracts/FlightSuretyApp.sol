@@ -81,6 +81,8 @@ contract FlightSuretyApp {
         _;
     }
 
+    event AirlineRegistered(address airlineAddress);
+    event AirlineNotRegistered(address airlineAddress, uint Votingcount, uint requiredCount, bool status);
     /********************************************************************************************/
     /*                                       CONSTRUCTOR                                        */
     /********************************************************************************************/
@@ -111,7 +113,7 @@ contract FlightSuretyApp {
     * @dev Add an airline to the registration queue
     *
     */
-    function registerAirline(address _airlineAddress) public requireIsOperational requireIsFundedAirLine(msg.sender)
+    function registerAirline(address _airlineAddress) public requireIsOperational
     {
         if (contractData.getRegisteredAirlinesCount() < count){
             contractData.registerAirline(_airlineAddress, true);
@@ -121,7 +123,35 @@ contract FlightSuretyApp {
         }
     }
 
+    function fundAirline(address _airlineAddress) public payable requireIsOperational{
+        uint256 val = 10 ether;
+        require(msg.sender == _airlineAddress, "It's not the same airline");
+        require(msg.value >= val, "Recieved Amount not enough");
+        contractData.fund.value(val)(_airlineAddress);
+    }
 
+    function fundAirlineCaller(address _airlineAddress) public{
+        fundAirline(_airlineAddress);
+    }
+
+    function voteForAirline(address airlineAddress) public requireIsOperational
+    requireIsFundedAirLine(msg.sender) requireIsAirLine(airlineAddress)
+    {
+        contractData.voteForAirline(msg.sender, airlineAddress);
+        // ARRANGE
+        uint Votingcount = contractData.getAirlineVotesCount(airlineAddress);
+        uint requiredCount = contractData.getMinimumRequiredVotingCount();
+        bool status = contractData.airlineRegistered(airlineAddress);
+
+        // ACT
+        if ( Votingcount > requiredCount && !status){
+            contractData.setAirlineRegistered(airlineAddress);
+            emit AirlineRegistered(airlineAddress);
+        }
+        else{
+            emit AirlineNotRegistered(airlineAddress, Votingcount, requiredCount, status);
+        }
+    }
    /**
     * @dev Register a future flight for insuring.
     *

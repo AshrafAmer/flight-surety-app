@@ -2,6 +2,7 @@
 var FlightSuretyApp = artifacts.require("FlightSuretyApp");
 var FlightSuretyData = artifacts.require("FlightSuretyData");
 var BigNumber = require('bignumber.js');
+var TruffleAssert = require('truffle-assertions');
 
 var Config = async function(accounts) {
     
@@ -25,7 +26,6 @@ var Config = async function(accounts) {
 
     let flightSuretyData = await FlightSuretyData.new(firstAirline);
     let flightSuretyApp = await FlightSuretyApp.new(flightSuretyData.address);
-
     
     return {
         owner: owner,
@@ -37,6 +37,14 @@ var Config = async function(accounts) {
     }
 }
 
+
+var passesWithEvent = async(eventName, asyncFunction) => {
+    await TruffleAssert.passes(asyncFunction);
+    TruffleAssert.eventEmitted(await asyncFunction, eventName);
+}
+
+
 module.exports = {
-    Config: Config
+    Config: Config,
+    passesWithEvent: passesWithEvent
 };

@@ -1,4 +1,5 @@
 import FlightSuretyApp from '../../build/contracts/FlightSuretyApp.json';
+import FlightSuretyData from '../../build/contracts/FlightSuretyData.json';
 import Config from './config.json';
 import Web3 from 'web3';
 
@@ -8,6 +9,7 @@ export default class Contract {
         let config = Config[network];
         this.web3 = new Web3(new Web3.providers.HttpProvider(config.url));
         this.flightSuretyApp = new this.web3.eth.Contract(FlightSuretyApp.abi, config.appAddress);
+        this.FlightSuretyData = new this.web3.eth.Contract(FlightSuretyData.abi, config.appAddress);
         this.initialize(callback);
         this.owner = null;
         this.airlines = [];
@@ -54,49 +56,41 @@ export default class Contract {
             });
     }
 
-    insuranceData(flightName, departure, callback){
-        let self = this;
-        let payload = {
-            airline: self.airlines[0],
-            flightName: flightName,
-            departure: departure
-        };
-        console.log('getInsurance:', self.airlines[0], self.passengers[0], flightName, departure);
 
-        self.flightSuretyApp.methods.insuranceData(self.passengers[0], self.airlines[0], flightName, departure)
-        .call({
-            from: self.passengers[0],
-        }, (err, res) => {
-            console.log('res:', res); 
-            console.log('err:', err); 
-            callback(err, res);
-        });
+    registerAirline(airline_address, callback) {
+        let self = this;
+        self.flightSuretyApp.methods
+            .registerAirline(airline_address)
+            .send({ from: self.owner}, (error, result) => {
+                callback(error);
+            });
     }
-        
 
-    buy(flightName, departure, callback){
+    fundAirline(airline_address, val, callback) {
         let self = this;
-        let payload = {
-            airline: self.airlines[0],
-            flightName: flightName,
-            departure: departure
-        };
-        console.log('purchase:', self.airlines[0], self.passengers[0], flightName, departure);
+        self.FlightSuretyData.methods
+            .fund(airline_address)
+            .send({ from: self.owner, value: val}, (error, result) => {
+                callback(error);
+            });
+    }
 
-        self.flightSuretyApp.methods.buy(
-            self.airlines[0],
-            flightName,
-            departure
-            )
-            .send(
-                {
-                from: self.passengers[0],
-                value: self.web3.utils.toWei("25", "ether"),
-                gas: 9500000,
-                },
-                (err, res) => {
-                    callback(err, res);
-                });
-        
+    buyTicket(airline, passenger, name, departure, callback){
+        let self = this;
+        self.FlightSuretyData.methods
+            .buy(passenger, airline, name, departure)
+            .send({ from: self.owner, value: 1}, (error, result) => {
+                callback(error);
+            });
+    }
+
+
+    updateAirline(airline, callback){
+        let self = this;
+        self.FlightSuretyData.methods
+            .setOperatingStatus(false)
+            .send({ from: airline}, (error, result) => {
+                callback(error);
+            });
     }
 }

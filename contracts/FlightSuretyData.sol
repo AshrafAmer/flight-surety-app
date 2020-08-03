@@ -90,6 +90,7 @@ contract FlightSuretyData {
     event AuthorizeCaller(address caller);
     event InsuranceIsBought(bytes32 flightKey);
 
+
     /********************************************************************************************/
     /*                                       FUNCTION MODIFIERS                                 */
     /********************************************************************************************/
@@ -344,6 +345,7 @@ contract FlightSuretyData {
     */
     function fund(address airlineAddress)public payable
     requireIsOperational requireAirLineRegistered(airlineAddress){
+        require(msg.value >= 10 ether, "No suffecient funds supplied");
         airlines[airlineAddress].funded = true;
         fundedAirlinesCount = fundedAirlinesCount.add(1);
         emit AirlineFunded(airlineAddress,

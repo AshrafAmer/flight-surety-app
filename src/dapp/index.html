@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 
@@ -6,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>FlightSurety</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
 <body>
@@ -26,31 +26,65 @@
         <div class="row top-20">
             <label class="form">Flight</label> <input type="text" id="flight-number"> <btn class="btn btn-primary" id="submit-oracle">Submit to Oracles</btn>
         </div>
+    </main>
 
-        <!-- -->
-        <div id="display-wrapper" class="top-20">
+
+    <main class="container">
+        <h2>0. Create Airline</h2>
+        <div id="display-airline" class="top-20">
         </div>
         <div class="row top-20">
-            <label class="form">Flight Name</label> <input type="text" id="flight-name"> 
+            <label class="form">Airline Name</label> <input type="text" id="airline-name">
+        </div>
+        <div class="row top-20">
+            <label class="form">Airline Address</label> <input type="text" id="airline-address"> <btn class="btn btn-primary" id="submit-airline">Register Airline</btn>
+        </div>
+    </main>
+
+
+    <main class="container">
+        <h2>1. Airline Send Funds</h2>
+        <div id="display-airline-fund" class="top-20">
+        </div>
+        <div class="row top-20">
+            <label class="form">Airline Address</label> <input type="text" id="airline-fund-address">
         </div>
 
         <div class="row top-20">
-            <label class="form">Departure</label> <input type="text" id="departure"> 
+            <label class="form">Value</label> <input type="number" min="0" id="airline-fund-value"> <btn class="btn btn-primary" id="fund-airline">Fund Airline</btn>
         </div>
+    </main>
 
-        <div class="row top-20"> 
-            <label class="form">Flight Address</label> <input type="text" id="flight-address"> 
-            <btn class="btn btn-primary" id="submit-ticket">Buy Ticket</btn>
-        </div>
-
-
-        <div id="display-wrapper" class="top-20">
+    <main class="container">
+        <h2>2. Buy Flight Ticket</h2>
+        <div id="display-airline-buy" class="top-20">
         </div>
         <div class="row top-20">
-            <label class="form">Flight Name</label> <input type="text" id="get-flight-name"> 
-            <label class="form">Departure</label> <input type="text" id="get-departure"> 
-            <btn class="btn btn-primary" id="get-flight-data">Flight Data</btn>
+            <label class="form">Airline Address</label> <input type="text" id="airline-ticket-address">
         </div>
+
+        <div class="row top-20">
+            <label class="form">passenger Address</label> <input type="text" id="airline-passenger-address">
+        </div>
+
+        <div class="row top-20">
+            <label class="form">Flight Name</label> <input type="text" id="airline-flight-name">
+        </div>
+
+        <div class="row top-20">
+            <label class="form">Flight Departure</label> <input type="number" id="airline-flight-departure"> <btn class="btn btn-primary" id="buy-airline">Buy</btn>
+        </div>
+
+    </main>
+
+    <main class="container">
+        <h2>3. Update Flight</h2>
+        <div id="display-airline-update" class="top-20">
+        </div>
+        <div class="row top-20">
+            <label class="form">Airline Address</label> <input type="text" id="airline-update-address"> <btn class="btn btn-primary" id="update-airline">Update</btn>
+        </div>
+
     </main>
 
 </body>

@@ -1,4 +1,3 @@
-
 import DOM from './dom';
 import Contract from './contract';
 import './flightsurety.css';
@@ -13,7 +12,7 @@ import './flightsurety.css';
         // Read transaction
         contract.isOperational((error, result) => {
             console.log(error,result);
-            display('Operational Status', 'Check if contract is operational', [ { label: 'Operational Status', error: error, value: result} ]);
+            display("display-wrapper", 'Operational Status', 'Check if contract is operational', [ { label: 'Operational Status', error: error, value: result} ]);
         });
     
 
@@ -22,38 +21,59 @@ import './flightsurety.css';
             let flight = DOM.elid('flight-number').value;
             // Write transaction
             contract.fetchFlightStatus(flight, (error, result) => {
-                display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp} ]);
+                display("display-wrapper", 'Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp} ]);
             });
         });
 
-        DOM.elid('submit-ticket').addEventListener('click', () => {
-            let flight = DOM.elid('flight-name').value;
-            let departure = DOM.elid('departure').value;
-            let address = DOM.elid('flight-address').value;
+
+        // User-submitted new Airline Address
+        DOM.elid('submit-airline').addEventListener('click', () => {
+            let airline = DOM.elid('airline-address').value;
             // Write transaction
-            contract.buy(address, flight, departure,(error, result) => {
-                display('Flight', [ { label: 'Buy Ticket', error: error, value: result + ' ' + result.timestamp} ]);
+            contract.registerAirline(airline, (error, result) => {
+                display('display-airline', 'Airline', 'Submit Airline', [ { label: 'Airline Address Added', value: airline} ]);
             });
         });
 
 
-        DOM.elid('get-flight-data').addEventListener('click', () => {
-            let _flight = DOM.elid('get-flight-name').value;
-            let _departure = DOM.elid('get-departure').value;
+        // User-submitted Airline Fund
+        DOM.elid('fund-airline').addEventListener('click', () => {
+            let airline = DOM.elid('airline-fund-address').value;
+            let val = DOM.elid('airline-fund-value').value;
             // Write transaction
-            contract.insuranceData(_flight, _departure,(error, result) => {
-                display('Flight', [ { label: 'Flight Data', error: error, value: result + ' ' + result.timestamp} ]);
+            contract.fundAirline(airline, val, (error, result) => {
+                display('display-airline-fund', 'Airline', 'Fund Airline', [ { label: 'Airline Funded', value: airline + ' ' + val + ' ether'} ]);
             });
         });
+
+        // User-submitted Airline Buy
+        DOM.elid('buy-airline').addEventListener('click', () => {
+            let airline = DOM.elid('airline-ticket-address').value;
+            let passenger = DOM.elid('airline-passenger-address').value;
+            let name = DOM.elid('airline-flight-name').value;
+            let departure = DOM.elid('airline-flight-departure').value;
+            // Write transaction
+            contract.buyTicket(airline, passenger, name, departure, (error, result) => {
+                display('display-airline-buy', 'Airline', 'Buy Airline', [ { label: 'Successfully Paid', value: airline } ]);
+            });
+        });
+
+        // User-submitted Airline Update
+        DOM.elid('update-airline').addEventListener('click', () => {
+            let airline = DOM.elid('airline-update-address').value;
+            // Write transaction
+            contract.updateAirline(airline, (error, result) => {
+                display('display-airline-update', 'setOperatingStatus', 'Update Airline', [ { label: 'Successfully Updated', value: airline } ]);
+            });
+        });
+
     
     });
-    
-
 })();
 
 
-function display(title, description, results) {
-    let displayDiv = DOM.elid("display-wrapper");
+function display(_id,title, description, results) {
+    let displayDiv = DOM.elid(_id);
     let section = DOM.section();
     section.appendChild(DOM.h2(title));
     section.appendChild(DOM.h5(description));
@@ -66,10 +86,3 @@ function display(title, description, results) {
     displayDiv.append(section);
 
 }
-
-
-
-
-
-
-
